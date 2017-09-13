@@ -46,6 +46,7 @@ options:
 	--wm		set the window manager name to mimic another window manager
 			(for use with -a)
 	--class		manually specify the classname of the window
+	--name		manually specify the name of the window
 	--clear		clear saved window id; useful after accidentally make a
 			window a dropdown (e.g. '$ tdrop --clear current')
 	--no-cancel	don't cancel auto-showing (default is to prevent this when
@@ -92,6 +93,7 @@ monitor_aware=false
 wm=
 user_set_wm=false
 class=
+name=
 while getopts :h:w:x:y:s:n:c:C:l:L:p:P:u:U:d:f:-:am opt
 do
 	case $opt in
@@ -151,6 +153,7 @@ do
 			user_set_wm=true;;
 		class) class=$OPTARG;;
 		clear) clearwid=true;;
+		name) name=$OPTARG;;
 		no-cancel) cancel_auto_show=false;;
 		help) print_help;;
 		*) print_help illegal_opt;;
@@ -565,6 +568,9 @@ program_start() {
 	fi
 	wid=$(create_win_return_wid "$program_command")
 	echo "$wid" > "$MUTDROP_PATH/$program$num"
+	if [[ ! -z "$name" ]]; then
+		xdotool set_window --name "$name" "$wid"
+	fi
 	echo -n "$wid"
 }
 
